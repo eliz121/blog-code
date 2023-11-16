@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"go/scanner"
 	"go/token"
-	"io/ioutil"
+	"os"
 )
 
 func main() {
-	src, _ := ioutil.ReadFile("main.go")
+	src, _ := os.ReadFile("main.go")
 
 	// Initialize the scanner.
 	var s scanner.Scanner
