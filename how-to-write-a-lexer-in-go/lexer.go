@@ -23,15 +23,19 @@ const (
 	MUL // *
 	DIV // /
 
-	ASSIGN // =
+	ASSIGN   // =
+	COMILLAS // ""
+	STRING   //ABCDE
 )
 
 var tokens = []string{
-	EOF:     "EOF",
-	ILLEGAL: "ILLEGAL",
-	IDENT:   "IDENT",
-	INT:     "INT",
-	SEMI:    ";",
+	EOF:      "EOF",
+	ILLEGAL:  "ILLEGAL",
+	IDENT:    "IDENT",
+	INT:      "INT",
+	SEMI:     ";",
+	COMILLAS: "COMILLAS",
+	STRING:   "STRING",
 
 	// Infix ops
 	ADD: "+",
@@ -97,6 +101,8 @@ func (l *Lexer) Lex() (Position, Token, string) {
 			return l.pos, DIV, "/"
 		case '=':
 			return l.pos, ASSIGN, "="
+		case '"':
+			return l.pos, COMILLAS, `"`
 		default:
 			if unicode.IsSpace(r) {
 				continue // nothing to do here, just move on
@@ -111,6 +117,11 @@ func (l *Lexer) Lex() (Position, Token, string) {
 				startPos := l.pos
 				l.backup()
 				lit := l.lexIdent()
+				if len(lit) > 1 {
+					return startPos, STRING, lit
+				} else {
+					return startPos, IDENT, lit
+				}
 				return startPos, IDENT, lit
 			} else {
 				return l.pos, ILLEGAL, string(r)
